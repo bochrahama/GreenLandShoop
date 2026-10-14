@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>MAISON</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="bar">
+        <a href="fashion.html"><b>MAISON</b></a>
+        <nav aria-label="Main">
+            <a href="#shop">Women</a>
+            <a href="#shop">Accessories</a>
+            <a href="#shop">New Arrivals</a>
+            <a href="#shop" class="sale">Sale</a>
+        </nav>
+        <span><a aria-label="Search" href="#shop">Search</a><a aria-label="Cart" href="#shop">Cart <i class="count">0</i></a><button aria-expanded="false" aria-label="Menu" class="menu">☰</button></span>
+    </header>
+    <main>
+        <section class="hero">
+            <img src="images/placeholder.png" alt="">
+            <h1>Elevate Your Everyday Style</h1>
+            <p>Discover our curated collection of timeless fashion essentials, designed to define your personal elegance.</p>
+            <a class="btn light" href="#shop">Shop Collection</a>
+        </section>
+        <section id="women">
+            <div class="head">
+                <div>
+                    <h2>Women's Collection</h2>
+                    <p>Timeless elegance for every occasion</p>
+                </div>
+            </div>
+            <div class="grid" data-set="women"></div>
+        </section>
+        <section class="feature solo">
+            <div>
+                <small><mark>SIGNATURE COLLECTION</mark>• Handcrafted Comfort</small>
+                <h2>Discover Our Signature <em>Hoodie Collection</em></h2>
+                <p>Crafted from organic cotton fleece with hand-finished details, our signature hoodies blend streetwear edge with refined comfort. Experience effortless style from our master tailors.</p>
+                <a class="btn" href="#shop">SHOP NOW →</a>
+                <ul>
+                    <li>Organic Cotton</li>
+                    <li>Free Shipping Worldwide</li>
+                </ul>
+            </div>
+        </section>
+        <section id="men">
+            <div class="head">
+                <div>
+                    <h2>Men's Collection</h2>
+                    <p>Our most refined pieces this season</p>
+                </div>
+                <a href="#men">View All ›</a>
+            </div>
+            <div class="grid" data-set="men"></div>
+        </section>
+    </main>
+    <footer class="foot">
+        <div>
+            <b>MAISON</b>
+            <p>Elevating your everyday style with sustainable, thoughtfully crafted fashion designed to inspire confidence.</p>
+        </div>
+        <nav aria-label="Shop">
+            <h4>SHOP</h4>
+            <a href="#shop">Women</a>
+            <a href="#shop">Accessories</a>
+            <a href="#shop">New Arrivals</a>
+            <a href="#shop">Sale</a>
+        </nav>
+        <nav aria-label="Support">
+            <h4>SUPPORT</h4>
+            <a href="#">Shipping</a>
+            <a href="#">Returns</a>
+            <a href="#">FAQ</a>
+            <a href="#">Contact</a>
+        </nav>
+        <form novalidate="">
+            <h4 class="join">Join our community</h4>
+            <input name="email" type="email" placeholder="Email address" aria-label="Email address">
+            <button>Subscribe</button>
+            <output></output>
+        </form>
+        <small><span>© 2024 MAISON. All rights reserved.</span><span>Instagram · Facebook · Twitter</span></small>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
