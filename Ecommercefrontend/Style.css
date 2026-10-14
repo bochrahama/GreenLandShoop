@@ -1,0 +1,645 @@
+:root {
+	--green: #1f4a3a;
+	--deep: #163628;
+	--ivory: #f5f2ec;
+	--paper: #fbf9f5;
+	--ink: #1d2a24;
+	--muted: #6d756f;
+	--line: #e3dfd6;
+	--gold: #d99a1c;
+	--serif: 'Cormorant Garamond', Georgia, serif;
+	--sans: 'Inter', system-ui, sans-serif;
+	--max: 1240px;
+	--pad: max(24px, (100% - var(--max)) / 2);
+	--ease: 0.2s ease;
+}
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+}
+
+body {
+	font: 14px/1.6 var(--sans);
+	color: var(--ink);
+	background: var(--ivory);
+	-webkit-font-smoothing: antialiased;
+}
+
+img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	background: #000;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+	transition: color var(--ease);
+}
+
+button, input {
+	font: inherit;
+}
+
+:focus-visible {
+	outline: 2px solid var(--gold);
+	outline-offset: 3px;
+}
+
+section, footer {
+	padding: 72px var(--pad);
+}
+
+h1, h2 {
+	font-family: var(--serif);
+	font-weight: 500;
+	line-height: 1.1;
+	letter-spacing: -0.01em;
+}
+
+h2 {
+	font-size: clamp(30px, 3.4vw, 42px);
+}
+
+	h2 + p {
+		color: var(--muted);
+		font-size: 13px;
+		margin: 8px 0 36px;
+	}
+
+em {
+	font-style: italic;
+	font-weight: 400;
+}
+
+/* 2. Buttons
+   -------------------------------------------------------------------------- */
+.btn, .card button, form button {
+	background: var(--green);
+	color: #fff;
+	border: 1px solid var(--green);
+	border-radius: 4px;
+	padding: 9px 16px;
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.04em;
+	cursor: pointer;
+	transition: background var(--ease), color var(--ease), border-color var(--ease);
+}
+
+.btn {
+	display: inline-block;
+	padding: 12px 26px;
+}
+
+	.btn:hover, .card button:hover {
+		background: var(--deep);
+		border-color: var(--deep);
+	}
+
+	.btn.light {
+		background: #fff;
+		color: var(--ink);
+		border-color: #fff;
+		border-radius: 24px;
+	}
+
+		.btn.light:hover {
+			background: var(--ivory);
+			border-color: var(--ivory);
+		}
+
+	.btn.ghost {
+		background: none;
+		border-color: #ffffff88;
+	}
+
+		.btn.ghost:hover {
+			background: #ffffff1a;
+			border-color: #fff;
+		}
+
+/* 3. Header
+   -------------------------------------------------------------------------- */
+.bar {
+	position: sticky;
+	top: 0;
+	z-index: 5;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 24px;
+	padding: 18px var(--pad);
+	background: var(--green);
+	color: #fff;
+	border-bottom: 1px solid #ffffff14;
+}
+
+	.bar > a:first-child {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+
+		.bar > a:first-child img {
+			width: 34px;
+			height: 34px;
+			border-radius: 6px;
+		}
+
+	.bar b {
+		font: 600 24px var(--serif);
+		letter-spacing: 0.06em;
+	}
+
+	.bar nav {
+		display: flex;
+		gap: 32px;
+		font-size: 12px;
+		letter-spacing: 0.03em;
+	}
+
+		.bar nav a {
+			opacity: 0.85;
+		}
+
+			.bar nav a:hover {
+				opacity: 1;
+				color: var(--gold);
+			}
+
+		.bar nav .sale {
+			color: var(--gold);
+			opacity: 1;
+		}
+
+	.bar span {
+		display: flex;
+		align-items: center;
+		gap: 20px;
+		font-size: 12px;
+	}
+
+.count {
+	display: inline-grid;
+	place-items: center;
+	width: 17px;
+	height: 17px;
+	border-radius: 50%;
+	background: var(--gold);
+	color: #000;
+	font-size: 10px;
+	font-style: normal;
+	font-weight: 700;
+}
+
+.menu {
+	display: none;
+	background: none;
+	border: 0;
+	color: #fff;
+	font-size: 22px;
+	cursor: pointer;
+}
+
+/* 4. Hero & sections
+   -------------------------------------------------------------------------- */
+.hero {
+	position: relative;
+	isolation: isolate;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: center;
+	gap: 20px;
+	min-height: 460px;
+	padding: 80px var(--pad);
+	color: #fff;
+}
+
+	.hero img {
+		position: absolute;
+		inset: 0;
+		z-index: -2;
+	}
+
+	.hero::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background: rgba(22, 54, 40, 0.84);
+	}
+
+	.hero h1 {
+		max-width: 640px;
+		font-size: clamp(38px, 5.2vw, 60px);
+	}
+
+	.hero p {
+		max-width: 520px;
+		font-size: 14px;
+		opacity: 0.88;
+	}
+
+	.hero figure {
+		position: absolute;
+		right: var(--pad);
+		top: 50%;
+		transform: translateY(-50%);
+		width: clamp(220px, 30vw, 400px);
+		aspect-ratio: 1;
+		overflow: hidden;
+		border-radius: 4px;
+	}
+
+.head {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+}
+
+	.head a {
+		font-size: 12px;
+		font-weight: 600;
+		border-bottom: 1px solid transparent;
+	}
+
+		.head a:hover {
+			border-color: currentColor;
+		}
+
+/* 5. Product cards
+   -------------------------------------------------------------------------- */
+.grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 48px 40px;
+}
+
+	.grid.four {
+		grid-template-columns: repeat(4, 1fr);
+		gap: 28px;
+	}
+
+	.grid.six {
+		grid-template-columns: repeat(6, 1fr);
+		gap: 20px;
+	}
+
+.card figure {
+	position: relative;
+	overflow: hidden;
+	aspect-ratio: 1 / 1.1;
+	margin-bottom: 16px;
+	border-radius: 2px;
+}
+
+	.card figure img {
+		transition: transform 0.5s ease;
+	}
+
+.card:hover figure img {
+	transform: scale(1.03);
+}
+
+.card figure span {
+	position: absolute;
+	top: 12px;
+	left: 12px;
+	padding: 4px 10px;
+	border-radius: 10px;
+	background: #fff;
+	font-size: 8px;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+}
+
+.card small {
+	color: var(--muted);
+	font-size: 9px;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.card h3 {
+	margin: 2px 0 4px;
+	font: 600 14px/1.3 var(--sans);
+}
+
+.card p {
+	color: var(--muted);
+	font-size: 11px;
+}
+
+	.card p::first-letter {
+		color: var(--gold);
+	}
+
+.card footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 12px 0 0;
+}
+
+.card b {
+	font-size: 15px;
+	font-weight: 600;
+}
+
+.six .card figure {
+	aspect-ratio: 1 / 1.45;
+	border-radius: 8px;
+}
+
+.six .card h3 {
+	font: 600 13px/1.3 'Playfair Display', Georgia, serif;
+}
+
+.six .card footer {
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+/* 6. Feature section
+   -------------------------------------------------------------------------- */
+.feature {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 64px;
+	align-items: center;
+	background: var(--paper);
+	border-block: 1px solid var(--line);
+}
+
+	.feature.solo {
+		display: block;
+	}
+
+	.feature > div {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 20px;
+		max-width: 560px;
+	}
+
+	.feature small {
+		color: var(--muted);
+		font-size: 10px;
+	}
+
+	.feature mark {
+		margin-right: 8px;
+		padding: 3px 10px;
+		border-radius: 3px;
+		background: #e6eee8;
+		color: var(--green);
+		font-weight: 700;
+		letter-spacing: 0.04em;
+	}
+
+	.feature p {
+		color: var(--muted);
+		font-size: 14px;
+	}
+
+	.feature .btn {
+		border-radius: 2px;
+		letter-spacing: 0.1em;
+	}
+
+	.feature ul {
+		display: grid;
+		gap: 6px;
+		list-style: none;
+		font-size: 12px;
+	}
+
+	.feature li::before {
+		content: "✓  ";
+		color: var(--green);
+		font-weight: 700;
+	}
+
+	.feature figure {
+		aspect-ratio: 1 / 1.1;
+		border-radius: 2px;
+		overflow: hidden;
+	}
+
+/* 7. Footer
+   -------------------------------------------------------------------------- */
+.foot {
+	display: grid;
+	grid-template-columns: 2fr 1fr 1fr 2fr;
+	gap: 40px;
+	background: var(--green);
+	color: #fff;
+}
+
+	.foot b {
+		font: 600 24px var(--serif);
+		letter-spacing: 0.06em;
+	}
+
+	.foot p {
+		max-width: 280px;
+		margin-top: 12px;
+		font-size: 12px;
+		opacity: 0.75;
+	}
+
+	.foot h4 {
+		margin-bottom: 14px;
+		font-size: 10px;
+		letter-spacing: 0.12em;
+	}
+
+	.foot a {
+		display: block;
+		margin-bottom: 8px;
+		font-size: 12px;
+		opacity: 0.75;
+	}
+
+		.foot a:hover {
+			opacity: 1;
+		}
+
+	.foot small {
+		grid-column: 1 / -1;
+		display: flex;
+		justify-content: space-between;
+		padding-top: 24px;
+		border-top: 1px solid #ffffff22;
+		font-size: 11px;
+		opacity: 0.6;
+	}
+
+/* 8. Newsletter form
+   -------------------------------------------------------------------------- */
+form {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+	form h4 {
+		flex-basis: 100%;
+	}
+
+	form input {
+		flex: 1;
+		min-width: 150px;
+		padding: 11px 16px;
+		border: 1px solid #ffffff44;
+		border-radius: 24px;
+		background: #ffffff12;
+		color: #fff;
+	}
+
+		form input::placeholder {
+			color: #ffffffaa;
+		}
+
+		form input:focus {
+			border-color: #fff;
+			outline: 0;
+		}
+
+	form button {
+		background: #fff;
+		color: var(--ink);
+		border-color: #fff;
+		border-radius: 24px;
+		padding: 11px 22px;
+	}
+
+		form button:hover {
+			background: var(--ivory);
+		}
+
+	form output {
+		flex-basis: 100%;
+		font-size: 12px;
+	}
+
+.foot h4.join {
+	font: 600 16px var(--serif);
+	letter-spacing: 0;
+}
+
+/* 9. Category cards
+   -------------------------------------------------------------------------- */
+.cats {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 32px;
+}
+
+	.cats a {
+		display: block;
+		padding: 28px;
+		border: 1px solid var(--line);
+		border-radius: 2px;
+		background: var(--paper);
+		transition: border-color var(--ease), transform var(--ease);
+	}
+
+		.cats a:hover {
+			border-color: var(--green);
+			transform: translateY(-2px);
+		}
+
+	.cats h3 {
+		font: 500 24px var(--serif);
+	}
+
+	.cats p {
+		margin-top: 4px;
+		color: var(--muted);
+		font-size: 12px;
+	}
+
+/* 10. Responsive
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+	section, footer {
+		padding-block: 56px;
+	}
+
+	.grid, .grid.four {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 32px 24px;
+	}
+
+		.grid.six {
+			grid-template-columns: repeat(3, 1fr);
+		}
+
+	.feature, .cats {
+		grid-template-columns: 1fr;
+		gap: 32px;
+	}
+
+	.foot {
+		grid-template-columns: 1fr 1fr;
+	}
+
+	.hero figure {
+		position: static;
+		transform: none;
+		width: min(100%, 320px);
+	}
+}
+
+@media (max-width: 700px) {
+	.menu {
+		display: block;
+	}
+
+	.bar nav {
+		display: none;
+		position: absolute;
+		top: 100%;
+		left: 0;
+		right: 0;
+		flex-direction: column;
+		gap: 0;
+		padding: 8px var(--pad);
+		background: var(--deep);
+	}
+
+		.bar nav.open {
+			display: flex;
+		}
+
+		.bar nav a {
+			padding: 12px 0;
+		}
+
+	.grid, .grid.four, .grid.six {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 24px 16px;
+	}
+
+	.foot {
+		grid-template-columns: 1fr;
+	}
+
+		.foot small {
+			flex-direction: column;
+			gap: 6px;
+		}
+
+	.card footer {
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+}
