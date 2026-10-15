@@ -642,4 +642,12 @@ form {
 		flex-wrap: wrap;
 		gap: 8px;
 	}
+	.wrap {
+		padding: 40px 5%
+	}
+	.ph {
+		overflow: hidden;
+		background: #e9e6dc
+	}
+
 }
