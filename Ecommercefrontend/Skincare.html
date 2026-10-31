@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Verdant — Nature's Radiance</title>
+    <title>GreenLand Skincare</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -12,20 +12,20 @@
     <header class="bar">
         <a href="skincare.html"><b>GreenLand Skincare</b></a>
         <nav aria-label="Main">
-            <a href=index.html>Home</a>
+            <a href="index.html">Home</a>
             <a href="floor.html">Floor</a>
             <a href="fashion.html">Fashion</a>
-            <a href="#shop" class="sale">Sale</a>
+            <a href="#best" class="sale">Sale</a>
      
         </nav>
-        <span><a aria-label="Search" href="#shop">Search</a><a aria-label="Cart" href="#shop">Cart <i class="count">0</i></a><button aria-expanded="false" aria-label="Menu" class="menu">☰</button></span>
+        <span><a aria-label="Search" href="#best">Search</a><a aria-label="Cart" href="cart.html">Cart <i class="count">0</i></a><button aria-expanded="false" aria-label="Menu" class="menu">☰</button></span>
     </header>
     <main>
         <section class="hero">
             <img src="images/skincare/p2.jpg" alt="">
             <h1>Nature's Radiance</h1>
             <p>Discover our new collection of botanical skincare and sustainable makeup essentials, designed to bring out your natural glow.</p>
-            <a class="btn light" href="#shop">Shop Collection</a>
+            <a class="btn light" href="#best">Shop Collection</a>
         </section>
 
         <section id="best">
@@ -36,43 +36,43 @@
             </div>
 
             <div class="grid four">
-                <article class="card">
-                    <figure>
+                <article class="card" data-id="1">
+                    <a href="product.html?id=1"><figure>
                         <img src="images/Skincare/p1.jpg" alt="Abib Glow Serum Duo">
                         <span>BEST SELLER</span>
-                    </figure>
+                    </figure></a>
                     <small>Skincare</small>
-                    <h3>Abib Glow Serum Duo</h3>
+                    <h3><a href="product.html?id=1">Abib Glow Serum Duo</a></h3>
                     <footer><b>$299.00</b><button>Add to Cart</button></footer>
                 </article>
 
-                <article class="card">
-                    <figure>
+                <article class="card" data-id="2">
+                    <a href="product.html?id=2"><figure>
                         <img src="images/Skincare/p2.jpg" alt="Green Tea Skincare Set">
                         <span>NEW</span>
-                    </figure>
+                    </figure></a>
                     <small>Skincare</small>
-                    <h3>Green Tea Skincare Set</h3>
+                    <h3><a href="product.html?id=2">Green Tea Skincare Set</a></h3>
                     <footer><b>$189.00</b><button>Add to Cart</button></footer>
                 </article>
 
-                <article class="card">
-                    <figure>
+                <article class="card" data-id="3">
+                    <a href="product.html?id=3"><figure>
                         <img src="images/Skincare/p3.jpg" alt="Green Tea Beauty Collection">
                         <span>SALE</span>
-                    </figure>
+                    </figure></a>
                     <small>Skincare</small>
-                    <h3>Green Tea Beauty Collection</h3>
+                    <h3><a href="product.html?id=3">Green Tea Beauty Collection</a></h3>
                     <footer><b>$129.00</b><button>Add to Cart</button></footer>
                 </article>
 
-                <article class="card">
-                    <figure>
+                <article class="card" data-id="4">
+                    <a href="product.html?id=4"><figure>
                         <img src="images/Skincare/p4.jpg" alt="Torriden Dive-In Serum Set">
                         <span>NEW</span>
-                    </figure>
+                    </figure></a>
                     <small>Skincare</small>
-                    <h3>Torriden Dive-In Serum</h3>
+                    <h3><a href="product.html?id=4">Torriden Dive-In Serum</a></h3>
                     <footer><b>$349.00</b><button>Add to Cart</button></footer>
                 </article>
             </div>
@@ -83,7 +83,7 @@
                 <small><mark>NEW COLLECTION</mark>• 95.4% Certified Organic</small>
                 <h2>Discover Our Botanical <em>Renewal Serum</em></h2>
                 <p>Formulated with cold-pressed olive squalane, active wild nettle, and pure rosemary extract to deeply restore your skin's natural barrier. Experience cellular renewal directly from the forest floor.</p>
-                <a class="btn" href="#shop">SHOP NOW →</a>
+                <a class="btn" href="#best">SHOP NOW →</a>
                 <ul>
                     <li>Cruelty-Free & Vegan</li>
                     <li>Free Shipping Worldwide</li>
@@ -102,10 +102,10 @@
         </div>
         <nav aria-label="Shop">
             <h4>SHOP</h4>
-            <a href="#shop">Makeup</a>
-            <a href="#shop">Skincare</a>
-            <a href="#shop">Accessories</a>
-            <a href="#shop">Gift Sets</a>
+            <a href="#best">Makeup</a>
+            <a href="#best">Skincare</a>
+            <a href="#best">Accessories</a>
+            <a href="#best">Gift Sets</a>
         </nav>
         <nav aria-label="Shop">
             <h4>EXPLORE</h4>
@@ -123,5 +123,6 @@
         <small><span>© 2026 GreenLand Shoop. All rights reserved.</span><span>Instagram · Facebook · Twitter</span></small>
     </footer>
     <script src="script.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
