@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orders — Verdant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="pages.css">
+</head>
+<body>
+<main><section>
+  <h2>Your orders</h2><p id="sub">Everything you have ordered so far.</p>
+  <div class="orders" id="root"><p class="empty">Loading…</p></div>
+</section></main>
+<script src="app.js"></script>
+<script>
+if (new URLSearchParams(location.search).has("placed")) $("#sub").textContent = "Thank you — your order was placed.";
+api("/api/order").then(d => {
+  const list = Array.isArray(d) ? d : d?.orders || [];
+  $("#root").innerHTML = list.length ? list.map(o => {
+    const items = o.items || o.products || [];
+    return `<article class="order">
+      <header><h3>Order #${esc(o.id)}</h3><span class="tag">${esc(o.status || "Placed")}</span></header>
+      <p style="color:var(--muted);font-size:12px;margin-bottom:10px">${esc(o.createdAt ? new Date(o.createdAt).toLocaleDateString() : "")}</p>
+      <ul>${items.map(i => `<li>${esc(i.name || i.product?.name)} × ${i.quantity}</li>`).join("")}</ul>
+      <footer><span>Total</span><span>${money(o.total ?? o.totalPrice)}</span></footer></article>`;
+  }).join("") : `<p class="empty">No orders yet. <a href="index.html">Start shopping</a></p>`;
+}).catch(err => $("#root").innerHTML = `<p class="empty">${esc(err.message)}</p>`);
+</script>
+</body>
+</html>
