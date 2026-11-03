@@ -96,12 +96,12 @@ builder.Services.AddMemoryCache();
 //FrontendPolicy is a constant string that defines the name of the CORS policy being added to the application.
 const string FrontendPolicy = "AllowFrontEnd";
 builder.Services.AddCors(options =>
-{//is to configure Cross-Origin Resource Sharing (CORS) settings for the application, allowing it to accept requests from specified frontend origins.
-    options.AddPolicy(FrontendPolicy, builder =>
+{
+    options.AddPolicy(FrontendPolicy, policy =>
     {
-        builder.WithOrigins("https://localhost:7208","http://localhost:5298") 
-               .AllowAnyHeader()
-               .AllowAnyMethod();
+        policy.WithOrigins("http://127.0.0.1:5500", "http://localhost:5500")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
     });
 });
 var app = builder.Build();
