@@ -19,7 +19,7 @@ namespace EcommerceBackend.Controllers
         private string GetUserId()
           => User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
-        [HttpGet]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetCart() => Ok(await _service.GetCartAsync(GetUserId()));
         [HttpPost("items")]
         public async Task<IActionResult> AddItemToCart([FromBody] CartItemDto cartItemDto)
