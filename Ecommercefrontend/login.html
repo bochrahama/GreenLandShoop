@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in — Verdant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="pages.css">
+</head>
+<body>
+<main><section class="auth"><div>
+  <h1>Welcome back</h1><p>Sign in to see your cart and orders.</p>
+  <form id="f">
+    <label>Email<input type="email" name="email" required autocomplete="email" placeholder="you@example.com"></label>
+    <label>Password<input type="password" name="password" required autocomplete="current-password"></label>
+    <p class="msg" id="msg" role="alert"></p>
+    <button class="btn" type="submit">Sign in</button>
+  </form>
+  <p class="alt">New here? <a href="register.html">Create an account</a></p>
+</div></section></main>
+<script src="app.js"></script>
+<script>
+$("#f").onsubmit = async e => {
+  e.preventDefault();
+  const b = e.submitter; b.disabled = true; $("#msg").textContent = "";
+  try {
+    const d = await api("/api/auth/login", { method: "POST", auth: false, body: Object.fromEntries(new FormData(e.target)) });
+    localStorage.setItem("token", d.token || d.accessToken || d.jwt);
+    location.href = new URLSearchParams(location.search).get("next") || "index.html";
+  } catch (err) { $("#msg").textContent = err.message; b.disabled = false; }
+};
+</script>
+</body>
+</html>
