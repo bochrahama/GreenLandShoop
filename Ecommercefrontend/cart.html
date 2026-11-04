@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cart — Verdant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="pages.css">
+</head>
+<body>
+<main><section>
+  <h2>Your cart</h2><p>Review your items before checkout.</p>
+  <div id="root"><p class="empty">Loading…</p></div>
+</section></main>
+<script src="app.js"></script>
+<script>
+async function load() {
+  const items = cartItems(await api("/api/cart"));
+  const root = $("#root");
+  $("#count").textContent = items.reduce((a, i) => a + i.quantity, 0);
+  if (!items.length) { root.innerHTML = `<p class="empty">Your cart is empty. <a href="index.html">Start shopping</a></p>`; return; }
+  const total = items.reduce((a, i) => a + i.price * i.quantity, 0);
+  root.innerHTML = `<div class="split">
+    <div class="lines">${items.map(i => `
+      <div class="line" data-id="${esc(i.id)}" data-q="${i.quantity}">
+        <figure>${img(i.image, i.name)}</figure>
+        <div><h3>${esc(i.name)}</h3><p>${money(i.price)}</p><button class="rm" data-act="rm">Remove</button></div>
+        <div class="qty"><button data-act="dec" aria-label="Less">−</button><output>${i.quantity}</output><button data-act="inc" aria-label="More">+</button></div>
+        <b>${money(i.price * i.quantity)}</b>
+      </div>`).join("")}</div>
+    <aside class="panel"><h3>Summary</h3>
+      <div class="sum"><div><span>Subtotal</span><span>${money(total)}</span></div><div><span>Shipping</span><span>Calculated at checkout</span></div><div class="total"><span>Total</span><span>${money(total)}</span></div></div>
+      <a class="btn" href="checkout.html">Checkout</a>
+    </aside></div>`;
+}
+document.addEventListener("click", async e => {
+  const act = e.target.dataset?.act; if (!act) return;
+  const row = e.target.closest(".line"), id = row.dataset.id, q = Number(row.dataset.q);
+  try {
+    if (act === "rm" || (act === "dec" && q <= 1)) await api("/api/cart/" + id, { method: "DELETE" });
+    else await api("/api/cart/" + id, { method: "PUT", body: { quantity: act === "inc" ? q + 1 : q - 1 } });
+    load();
+  } catch (err) { alert(err.message); }
+});
+load().catch(err => $("#root").innerHTML = `<p class="empty">${esc(err.message)}</p>`);
+</script>
+</body>
+</html>
