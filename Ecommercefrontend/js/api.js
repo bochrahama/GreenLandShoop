@@ -1,22 +1,18 @@
 "use strict";
 // ---- Configuration ----------------------------------------------------------
-// [CONFIRM] 
-const API_BASE = "https://localhost:7208";
-10
-// Keys used in localStorage. A prefix avoids clashing with other sites on localhost.
+// [CONFIRM] Copy the https address from Properties/launchSettings.json (profile "https").
+const API_BASE = "https://localhost:7208/api";
+// Keys used in localStorage.
 const TOKEN_KEY = "onearth_token";
 const CART_COUNT_KEY = "onearth_cart_count";
-// ---- Token storage ----------------------------------------------------------
+//getToken is for getting the token from local storage, setToken is for setting the token in local storage,and clearToken is for removing the token from local storage.
+// parseJwt is for decoding the JWT token to get its payload, isTokenExpired checks if the token has expired based on its "exp" claim, 
 function getToken() {
     try { return localStorage.getItem(TOKEN_KEY); } catch { return null; }
 }
-//settoken is used to store the token in local storage, and clearToken is used to remove it.
 function setToken(token) { localStorage.setItem(TOKEN_KEY, token); }
 function clearToken() { localStorage.removeItem(TOKEN_KEY); }
-// parseJwt decodes the JWT payload, which is base64url-encoded JSON. It returns null if the token is invalid.
-//base64url-encoded JSON is a way of encoding JSON data in a compact format that can be safely transmitted in URLs.
-//The parseJwt function takes a JWT token as input, decodes the payload, and returns the parsed JSON object.
-//If the token is invalid or cannot be decoded, it returns null.
+// A JWT is three base64url parts separated by dots; the middle one is the JSON payload.
 function parseJwt(token) {
     try {
         const base64 = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
@@ -26,9 +22,8 @@ function parseJwt(token) {
         return null;
     }
 }
-// "exp" is in seconds since 1970. This is only a convenience check: the server is the real judge.
-//isTokenExpired checks if the JWT token has expired by comparing the expiration time
-//in the token's payload with the current time. It returns true if the token is expired or invalid, and false otherwise.
+//isTokenExpired checks if the token has expired based on its "exp" claim,
+// which is in seconds since the epoch. It multiplies by 1000 to convert to milliseconds for comparison with Date.now().
 function isTokenExpired(token) {
     const payload = parseJwt(token);
     if (!payload || !payload.exp) return true;
@@ -39,37 +34,29 @@ function isLoggedIn() {
     return Boolean(token) && !isTokenExpired(token);
 }
 
-// ---- Errors -----------------
-//ApiError is a custom error class that extends the built-in Error class. It is used to represent errors that occur during API requests.
-//The constructor takes three parameters: status (the HTTP status code), message (a descriptive error message), and details (optional additional information about the error).
-// The class sets the name property to "ApiError" and assigns the provided values to the corresponding properties.
+//Error handling function to handle errors from fetch requests. It checks if the response is not ok, and if so, it throws an error with the status text. Otherwise, it returns the JSON response.
+
 class ApiError extends Error {
     constructor(status, message, details = null) {
         super(message);
         this.name = "ApiError";
         this.status = status; // 0 means "no HTTP response": server down, CORS, certificate, mixed content
-        this.details = details; // the parsed response body, if any
+        this.details = details; // the parsed response body, if any further details are needed (e.g., validation errors)
     }
 }
-// Your API returns errors in four different shapes. This function understands all of them:
-// "Invalid email or password" (BadRequest(string))
-// [ { "code": "...", "description": "..." } ] (Identity errors from register)
-// { "title": "...", "errors": { "Field": ["msg"] } } (automatic [ApiController] validation)
-// { "message": "..." } (custom exception middleware)
+//extractErrorMessage is a utility function that extracts a human-readable error message from the response body of an API request.
+// It handles different formats of error responses, including strings, arrays, and objects, and provides default messages for common HTTP status codes.
 function extractErrorMessage(body, status) {
-//if string mean s the body is a string and it is not empty, return the body as the error message.
-    if (typeof body === "string" && body.trim()) return body;
-    if (Array.isArray(body)) {
-        const text = body.map((e) => e.description || e.message || "").filter(Boolean).join(" ");
+    if (typeof body === "string" && body.trim()) return body;// this line mean that if the body is a non-empty string, it will return that string as the error message. The trim() method is used to remove any leading or trailing whitespace from the string before checking if it's empty. If the body is a non-empty string, it is assumed to be a valid error message and is returned directly.
+    if (Array.isArray(body)) { 
+        const text = body.map((e) => e.description || e.message || "").filter(Boolean).join(" "); //the condition for filter(Boolean) is used to remove any empty strings from the array before joining them into a single string. This ensures that only non-empty error messages are included in the final error message.
         if (text) return text;
     }
-//if the body is an object, check for different properties that may contain error messages and return the first one found.
     if (body && typeof body === "object") {
         if (body.errors && typeof body.errors === "object") {
-            const text = Object.values(body.errors).flat().join(" ");
+            const text = Object.values(body.errors).flat().join(" "); //the condition for filter(Boolean) is used to remove any empty strings from the array before joining them into a single string. This ensures that only non-empty error messages are included in the final error message.
             if (text) return text;
         }
-//otherwise, check for message, title, or detail properties and return the first one found.
         if (body.message) return body.message;
         if (body.title) return body.title;
         if (body.detail) return body.detail;
@@ -90,12 +77,11 @@ function redirectToLogin(reason) {
     const next = encodeURIComponent(page + location.search);
     location.href = `login.html?next=${next}` + (reason ? `&reason=${reason}` : "");
 }
-// ---- The one function that talks HTTP ---------------------------------------
-// options.auth send "Authorization: Bearer <token>" (default false, like the original plan)
-// options.redirectOn401 on 401, clear the token and go to login.html (default true)
 
-//apiFetch is an asynchronous function that performs an HTTP request to the specified API endpoint. It takes two parameters:
-// path (the API endpoint path) and options (an optional object containing request options).
+//apiFetch is a function that performs an API request using the Fetch API. It takes a path and an options object as parameters,
+//constructs the request with appropriate headers (including authorization if needed), and handles the response. If the response is not ok,
+//it throws an ApiError with the status and extracted error message.
+// If the response is successful, it returns the parsed JSON data or null for a 204 No Content response.
 async function apiFetch(path, options = {}) {
     const { method = "GET", body, auth = false, redirectOn401 = true } = options;
     const headers = { Accept: "application/json" };
@@ -111,7 +97,7 @@ async function apiFetch(path, options = {}) {
         });
     } catch {
         // fetch() only rejects when NO response arrived. Open the browser console for the real reason.
-        throw new ApiError(0, "Cannot reach the server. Is the API running? (See the console for CORS or certificate errors.)");
+        throw new ApiError(0, "Cannot reach the server. Is the API running? (See the console for CORS or certificate errors.)"); 
     }
     if (response.status === 204) return null; // No Content: nothing to parse
     const text = await response.text();
@@ -132,7 +118,6 @@ const api = {
     put: (path, body, opts = {}) => apiFetch(path, { ...opts, method: "PUT", body }),
     del: (path, opts = {}) => apiFetch(path, { ...opts, method: "DELETE" }),
 };
-// buildQuery({ search: "oil", categoryId: 2, minPrice: "" }) -> "?search=oil&categoryId=2"
 function buildQuery(params) {
     const query = new URLSearchParams();
     Object.entries(params).forEach(([key, value]) => {
