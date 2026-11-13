@@ -99,7 +99,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(FrontendPolicy, policy =>
     {
-        policy.WithOrigins("http://127.0.0.1:5500", "http://localhost:5500")
+        policy.WithOrigins("http://localhost:63755",   "http://127.0.0.1:5500", "http://localhost:5500")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -122,69 +122,65 @@ app.UseAuthorization();
 
 
 app.MapControllers();
-var roleManager = app.Services.CreateScope().ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-// Create roles if they don't exist
-// the porpes is to ensure that the necessary roles are available in the system for user management and authorization purposes.
-foreach (var roleName in new[] { "Admin", "User" })
-{
-    if (!await roleManager.RoleExistsAsync(roleName))
-    {
-        await roleManager.CreateAsync(new IdentityRole(roleName));
-    }
-}
+app.MapControllers();
+
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>(); // [CONFIRM: DbContext name]
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    foreach (var roleName in new[] { "Admin", "User" })
     {
-        Category EnsureCategory(string name, string description)
+        if (!await roleManager.RoleExistsAsync(roleName))
+            await roleManager.CreateAsync(new IdentityRole(roleName));
+    }
+
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    Category EnsureCategory(string name, string description)
+    {
+        var existing = db.Categories.FirstOrDefault(c => c.Name == name);
+        if (existing is not null) return existing;
+        var created = new Category { Name = name, Description = description };
+        db.Categories.Add(created);
+        db.SaveChanges();
+        return created;
+    }
+
+    var fashion = EnsureCategory("Fashion & Style", "Clothing, accessories, and everyday essentials.");
+    var skincare = EnsureCategory("Skincare", "Natural routines for healthy, glowing skin.");
+    var home = EnsureCategory("Home Decor", "Pieces to make your space feel calm and inviting.");
+
+    void SeedProducts(Category cat, params (string name, string desc, decimal price, int stock, string image)[] items)
+    {
+        if (db.Products.Any(p => p.ProductCategoryId == cat.Id)) return;
+        foreach (var i in items)
         {
-            var existing = db.Categories.FirstOrDefault(c => c.Name == name);
-            if (existing is not null) return existing;
-            var created = new Category { Name = name, Description = description };
-            db.Categories.Add(created);
-            db.SaveChanges();
-            return created;
-        }
-        // Names must match the CATEGORY_NAMES map in js/products.js (case-insensitive).
-        var fashion = EnsureCategory("Fashion & Style", "Clothing, accessories, and everyday essentials.");
-        var skincare = EnsureCategory("Skincare", "Natural routines for healthy, glowing skin.");
-        var home = EnsureCategory("Home Decor", "Pieces to make your space feel calm and inviting.");
-        void SeedProducts(Category cat, params (string name, string desc, decimal price, int stock, string image)[]
-        items)
-        {
-            if (db.Products.Any(p => p.ProductCategoryId == cat.Id)) return; // do not duplicate
-            foreach (var i in items)
+            db.Products.Add(new Product
             {
-                var product = new Product
-                {
-                    ProductName = i.name,
-                    ProductDescription = i.desc,
-                    ProductPrice = i.price,
-                    ProductQuantity = i.stock,
-                    ProductCategoryId = cat.Id
-                };
-                db.Products.Add(product);
-            }
-            db.SaveChanges();
+                ProductName = i.name,
+                ProductDescription = i.desc,
+                ProductPrice = i.price,
+                ProductQuantity = i.stock,
+                ProductCategoryId = cat.Id
+            });
         }
-        SeedProducts(fashion,
-        ("Organic Cotton Hoodie", "Fleece-lined hoodie in certified organic cotton.", 89.00m, 25,
-        "images/product-1.jpg"),
-    ("Linen Wrap Dress", "Breathable linen dress with a relaxed wrap fit.", 129.00m, 12, "images/product-2.jpg"),
+        db.SaveChanges();
+    }
+
+    SeedProducts(fashion,
+        ("Organic Cotton Hoodie", "Fleece-lined hoodie in certified organic cotton.", 89.00m, 25, "images/product-1.jpg"),
+        ("Linen Wrap Dress", "Breathable linen dress with a relaxed wrap fit.", 129.00m, 12, "images/product-2.jpg"),
         ("Canvas Tote Bag", "Sturdy everyday tote with a natural finish.", 39.00m, 40, "images/product-3.jpg"),
         ("Merino Wool Scarf", "Soft, warm and made to last.", 59.00m, 3, "images/product-4.jpg"));
-        SeedProducts(skincare,
+    SeedProducts(skincare,
         ("Glowfit Gel 100ml", "Light hydrating gel for daily use.", 189.00m, 30, "images/product-2.jpg"),
-        ("Botanical Renewal Serum", "Squalane, wild nettle and rosemary extract.", 74.00m, 18,
-        "images/product-1.jpg"),
-    ("Rosemary Face Oil", "Cold-pressed botanical oil blend.", 48.00m, 22, "images/product-3.jpg"),
+        ("Botanical Renewal Serum", "Squalane, wild nettle and rosemary extract.", 74.00m, 18, "images/product-1.jpg"),
+        ("Rosemary Face Oil", "Cold-pressed botanical oil blend.", 48.00m, 22, "images/product-3.jpg"),
         ("Nettle Clay Mask", "Weekly purifying clay mask.", 32.00m, 0, "images/product-4.jpg"));
-        SeedProducts(home,
+    SeedProducts(home,
         ("Velvet Lounge Sofa", "Velvet upholstery with solid oak legs.", 899.00m, 5, "images/product-1.jpg"),
         ("Oak Floor Lamp", "Warm light and a solid oak base.", 149.00m, 14, "images/product-2.jpg"),
         ("Handwoven Jute Rug", "Natural jute, handwoven by artisans.", 219.00m, 9, "images/product-3.jpg"),
         ("Ceramic Vase", "Hand-glazed stoneware vase.", 45.00m, 31, "images/product-4.jpg"));
-    }
-
-    app.Run();
 }
+
+app.Run();   
