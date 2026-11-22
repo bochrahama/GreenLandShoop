@@ -73,57 +73,83 @@ function setFormError(box, message) {
     box.textContent = message;
     box.hidden = !message;
 }
-//it's for extracting error messages from API responses based on the status code.
-//It takes the response data and status code as parameters and returns a user-friendly error message.
+
 async function submitAuthForm(form, action) {
     const box = document.getElementById("form-error");
     const button = form.querySelector("button[type=submit]");
 
-    const params = new URLSearchParams(location.search);// this line means extract all the query parameters from the current URL
+    const params = new URLSearchParams(location.search);
+
     button.disabled = true;
     setFormError(box, "");
+
     try {
         await action();
         location.href = safeNext(params.get("next"));
     } catch (error) {
-        setFormError(box, error.message);
+        setFormError(box, error.message || "Something went wrong.");
         button.disabled = false;
     }
-    //initLoginForm initializes the login form on the page. It checks for the presence of the login form element and sets up event listeners for form submission.
-    //It also handles displaying error messages based on query parameters in the URL (e.g., "expired" or "required") and redirects logged-in users to the appropriate page.
-
-    function initLoginForm() {
-        const form = document.getElementById("login-form");
-        if (!form) return;
-        const params = new URLSearchParams(location.search);
-        const box = document.getElementById("form-error");
-        if (params.get("reason") === "expired") setFormError(box, "Your session expired. Please log in again.");
-        if (params.get("reason") === "required") setFormError(box, "Please log in to continue.");
-        if (isLoggedIn()) { location.href = safeNext(params.get("next")); return; }
-        clearToken(); // remove any stale token
-        form.addEventListener("submit", (event) => {
-            event.preventDefault();
-            submitAuthForm(form, () => login(form.email.value.trim(), form.password.value));
-        });
-    }
-    function initRegisterForm() {
-        const form = document.getElementById("register-form");
-        if (!form) return;
-        form.addEventListener("submit", (event) => {
-            event.preventDefault();
-            const box = document.getElementById("form-error");
-            if (form.password.value !== form.confirm.value) {
-                setFormError(box, "The two passwords do not match.");
-                return;
-            }
-            submitAuthForm(form, () =>
-                register(form.fullName.value.trim(), form.email.value.trim(), form.password.value));
-        });
-    }
-    document.addEventListener("DOMContentLoaded", () => {
-        updateNavbar();
-        initLoginForm();
-        initRegisterForm();
-    }
-    );
 }
+
+// Login initialization
+function initLoginForm() {
+    const form = document.getElementById("login-form");
+    if (!form) return;
+
+    const params = new URLSearchParams(location.search);
+    const box = document.getElementById("form-error");
+
+    if (params.get("reason") === "expired")
+        setFormError(box, "Your session expired. Please log in again.");
+
+    if (params.get("reason") === "required")
+        setFormError(box, "Please log in to continue.");
+
+    if (isLoggedIn()) {
+        location.href = safeNext(params.get("next"));
+        return;
+    }
+
+    clearToken();
+
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        submitAuthForm(form, () =>
+            login(form.email.value.trim(), form.password.value)
+        );
+    });
+}
+
+// Register initialization
+function initRegisterForm() {
+    const form = document.getElementById("register-form");
+    if (!form) return;
+
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const box = document.getElementById("form-error");
+
+        if (form.password.value !== form.confirm.value) {
+            setFormError(box, "The two passwords do not match.");
+            return;
+        }
+
+        submitAuthForm(form, () =>
+            register(
+                form.fullName.value.trim(),
+                form.email.value.trim(),
+                form.password.value
+            )
+        );
+    });
+}
+
+// Run when HTML is ready
+document.addEventListener("DOMContentLoaded", () => {
+    updateNavbar();
+    initLoginForm();
+    initRegisterForm();
+});
