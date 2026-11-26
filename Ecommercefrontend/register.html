@@ -10,30 +10,49 @@
 <link rel="stylesheet" href="pages.css">
 </head>
 <body>
-<main><section class="auth"><div>
-  <h1>Create your account</h1><p>It takes a minute, then you can start shopping.</p>
-  <form id="f">
-    <label>Full name<input name="name" required autocomplete="name"></label>
-    <label>Email<input type="email" name="email" required autocomplete="email" placeholder="you@example.com"></label>
-    <label>Password<input type="password" name="password" required minlength="6" autocomplete="new-password"></label>
-    <p class="msg" id="msg" role="alert"></p>
-    <button class="btn" type="submit">Create account</button>
-  </form>
-  <p class="alt">Already registered? <a href="login.html">Sign in</a></p>
-</div></section></main>
-<script src="app.js"></script>
-<script>
-$("#f").onsubmit = async e => {
-  e.preventDefault();
-  const b = e.submitter; b.disabled = true; $("#msg").textContent = "";
-  const body = Object.fromEntries(new FormData(e.target));
-  try {
-    await api("/api/auth/register", { method: "POST", auth: false, body });
-    const d = await api("/api/auth/login", { method: "POST", auth: false, body: { email: body.email, password: body.password } });
-    localStorage.setItem("token", d.token || d.accessToken || d.jwt);
-    location.href = "index.html";
-  } catch (err) { $("#msg").textContent = err.message; b.disabled = false; }
-};
-</script>
+    <main>
+
+        <section class="auth">
+            <div>
+                <h1>Create your account</h1>
+                <p>It takes a minute, then you can start shopping.</p>
+
+                <form id="register-form">
+                    <div class="field">
+                        <label for="fullName">Full name</label>
+                        <input id="fullName" name="fullName" type="text" autocomplete="name" required>
+                    </div>
+                    <div class="field">
+                        <label for="email">Email</label>
+                        <input id="email" name="email" type="email" autocomplete="email" required>
+                    </div>
+                    <div class="field">
+                        <label for="password">Password</label>
+                        <input id="password" name="password" type="password" autocomplete="new-password" minlength="8" required>
+                        <small>
+                            At least 8 characters, with upper-case, lower-case and a digit. [CONFIRM: your Identity
+                            options]
+                        </small>
+                    </div>
+                    <div class="field">
+                        <label for="confirm">Confirm password</label>
+                        <input id="confirm" name="confirm" type="password" autocomplete="new-password" required>
+                    </div>
+                    <div class="msg" id="form-error" role="alert" hidden></div>
+
+                    <button class="btn" type="submit">CREATE ACCOUNT</button>
+                </form>
+
+                <p class="alt">
+                    Already registered? <a href="login.html">Sign in</a>
+                </p>
+            </div>
+        </section>
+
+    </main>
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/scripts.js"></script>
+ 
 </body>
 </html>
